@@ -39,35 +39,30 @@ class PostController extends Controller
         }
 
         //retornar
-        return back()->with('status', 'Creado con éxito');
+        return redirect()->route('posts.edit', $post->id)->with('status', 'Creado con éxito');
     }
 
 
-    // public function edit($id)
-    // {
-    //     $post = Post::find($id);
-    //     $this->authorize('pass', $post);
-    //     $categories = Category::orderBy('name', 'ASC')->pluck('name', 'id');
-    //     $tags = Tag::orderBy('name', 'ASC')->get();
-    //     return view('posts.edit', compact('post', 'categories', 'tags'));
-    // }
+    public function edit(Post $post)
+    {
+        return view('posts.edit', compact('post'));
+    }
 
 
-    // public function update(PostUpdateRequest $request, $id)
-    // {
-    //     $post = Post::find($id);
-    //     $this->authorize('pass', $post);
-    //     $post->update($request->all());
+    public function update(PostRequest $request, $id)
+    {
+        $post = Post::find($id);
+        $post->update($request->all());
         
-    //     //image
-    //     if($request->file('file')){
-    //         $path = Storage::disk('public')->put('image', $request->file('file'));
-    //         $post->fill(['file'=> asset($path)])->save();
-    //     }
+        //image
+        if($request->file("file")){
+
+            $post->image= $request->file("file")->store("posts","public");
+            $post->save();
+        }
         
-    //     $post->tags()->sync($request->get('tags'));
-    //     return redirect()->route('posts.edit', $post->id)->with('info', 'Entrada actualizada con exito');
-    // }
+        return redirect()->route('posts.edit', $post->id)->with('status', 'Entrada actualizada con exito');
+    }
 
 
     // public function destroy($id)
