@@ -21,3 +21,13 @@ Route::get('blog/{post:slug}', 'PageController@post')->name('post');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+//Ruta del backend para manejar los posts
+Route::resource('posts', 'Backend\PostController')
+    ->middleware('auth')
+    ->except('show'); //El metodo show lo excluimos ya que ya lo tenemos desde la parte publica
+
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
